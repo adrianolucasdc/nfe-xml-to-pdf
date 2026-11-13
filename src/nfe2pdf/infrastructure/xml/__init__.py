@@ -1,4 +1,10 @@
 """XML infrastructure package for nfe2pdf."""
 from __future__ import annotations
 
-# Parser and validator will be added in Commit 4
+from nfe2pdf.infrastructure.xml.parser import NFexmlParser
+from nfe2pdf.infrastructure.xml.validator import NFexmlValidator
+
+__all__ = [
+    "NFexmlParser",
+    "NFexmlValidator",
+]
