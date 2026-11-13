@@ -1,4 +1,13 @@
 """Infrastructure package for nfe2pdf."""
 from __future__ import annotations
 
-# Adapters for PDF, XML, Windows will be added in Commits 5, 6, 13
+from nfe2pdf.infrastructure.xml import NFexmlParser, NFexmlValidator
+from nfe2pdf.infrastructure.pdf import BFRAdapter, create_pdf_generator, PDFGeneratorBase
+
+__all__ = [
+    "NFexmlParser",
+    "NFexmlValidator",
+    "BFRAdapter",
+    "create_pdf_generator",
+    "PDFGeneratorBase",
+]
