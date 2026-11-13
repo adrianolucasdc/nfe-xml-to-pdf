@@ -1,4 +1,91 @@
-"""Domain package for nfe2pdf."""
+"""Domain package for nfe2pdf - Core business logic."""
 from __future__ import annotations
 
-# Domain models, exceptions, and ports will be added in Commit 3
+from nfe2pdf.domain.models import (
+    NFeData,
+    Header,
+    Emitter,
+    Recipient,
+    Detail,
+    Product,
+    Taxes,
+    Totals,
+    Transport,
+    Payment,
+    Address,
+    ICMS,
+    IPI,
+    PIS,
+    COFINS,
+    AdditionalInfo,
+    NFVersion,
+    NFType,
+    NFEnvironment,
+    NFProcessType,
+    NFEmissionType,
+    NFIndicatorFinal,
+    NFIndicatorPresence,
+)
+
+from nfe2pdf.domain.exceptions import (
+    NFe2PDFError,
+    InvalidXmlError,
+    NotNFeError,
+    InvalidNFeVersionError,
+    MissingRequiredFieldError,
+    PDFGenerationError,
+    ConfigurationError,
+    FileAssociationError,
+    ValidationError,
+)
+
+from nfe2pdf.domain.ports import (
+    XMLParser,
+    PDFGenerator,
+    PDFGeneratorConfig,
+    FileAssociationManager,
+    ConfigManager,
+)
+
+__all__ = [
+    # Models
+    "NFeData",
+    "Header",
+    "Emitter",
+    "Recipient",
+    "Detail",
+    "Product",
+    "Taxes",
+    "Totals",
+    "Transport",
+    "Payment",
+    "Address",
+    "ICMS",
+    "IPI",
+    "PIS",
+    "COFINS",
+    "AdditionalInfo",
+    "NFVersion",
+    "NFType",
+    "NFEnvironment",
+    "NFProcessType",
+    "NFEmissionType",
+    "NFIndicatorFinal",
+    "NFIndicatorPresence",
+    # Exceptions
+    "NFe2PDFError",
+    "InvalidXmlError",
+    "NotNFeError",
+    "InvalidNFeVersionError",
+    "MissingRequiredFieldError",
+    "PDFGenerationError",
+    "ConfigurationError",
+    "FileAssociationError",
+    "ValidationError",
+    # Ports
+    "XMLParser",
+    "PDFGenerator",
+    "PDFGeneratorConfig",
+    "FileAssociationManager",
+    "ConfigManager",
+]
