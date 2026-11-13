@@ -1,0 +1,80 @@
+# nfe2pdf - Configuration File
+# Copy to %APPDATA%\nfe2pdf\config.yaml and customize
+
+# PDF Generation Settings
+danfe:
+  # Layout: "auto" (padrão), "nt_2026_010", "moc_7_0" (deprecated)
+  layout: "auto"
+
+  # Logo: caminho absoluto para arquivo .png/.jpg ou null para sem logo
+  logo: null
+
+  # Margins em mm
+  margins:
+    top: 5
+    right: 5
+    bottom: 5
+    left: 5
+
+  # Fonte: "times" ou "courier"
+  font_type: "times"
+
+  # Tamanho da fonte: "small" (1.0) ou "big" (1.35)
+  font_size: "small"
+
+  # Configuração de impostos
+  tax_configuration: "standard_icms_ipi"  # standard_icms_ipi | icms_st | without_ipi
+
+  # Exibição de duplicatas
+  invoice_display: "full_details"  # full_details | duplicates_only
+
+  # Exibir PIS/COFINS na coluna de produtos
+  display_pis_cofins: false
+
+  # Marca d'água "CANCELADA" se NF-e cancelada
+  watermark_cancelled: true
+
+  # Quebrar linha em ponto e vírgula no campo infCpl
+  infcpl_semicolon_newline: false
+
+  # Configuração de descrição de produtos
+  product_description:
+    display_branch: false
+    display_anp: false
+    display_anvisa: false
+    display_additional_info: true
+    display_xped: false
+    branch_info_prefix: ""
+
+  # Configuração decimal
+  decimal_config:
+    price_precision: 4
+    quantity_precision: 4
+
+  # Posição do canhoto
+  receipt_position: "top"  # top | bottom | left
+
+  # Imprimir canhoto do transportador
+  carrier_receipt: false
+
+  # Footer stamp (rodapé personalizado)
+  footer_stamp:
+    text: ""
+    logo: null
+    height: 5
+    logo_max_width: 20
+    spacing: 1
+
+# Logging
+logging:
+  level: "INFO"  # DEBUG | INFO | WARNING | ERROR
+  file: null     # null = só console; caminho = arquivo rotativo
+  rotation: "10 MB"
+  retention: "7 days"
+
+# Output
+output:
+  # Diretório padrão para PDFs gerados (null = mesma pasta do XML)
+  default_dir: null
+  # Sobrescrever arquivo existente sem perguntar
+  overwrite: false
