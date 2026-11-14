@@ -1,50 +1,48 @@
 """Domain package for nfe2pdf - Core business logic."""
 from __future__ import annotations
 
+from nfe2pdf.domain.exceptions import (
+    ConfigurationError,
+    FileAssociationError,
+    InvalidNFeVersionError,
+    InvalidXmlError,
+    MissingRequiredFieldError,
+    NFe2PDFError,
+    NotNFeError,
+    PDFGenerationError,
+    ValidationError,
+)
 from nfe2pdf.domain.models import (
-    NFeData,
-    Header,
-    Emitter,
-    Recipient,
-    Detail,
-    Product,
-    Taxes,
-    Totals,
-    Transport,
-    Payment,
-    Address,
+    COFINS,
     ICMS,
     IPI,
     PIS,
-    COFINS,
     AdditionalInfo,
-    NFVersion,
-    NFType,
-    NFEnvironment,
-    NFProcessType,
+    Address,
+    Detail,
+    Emitter,
+    Header,
+    NFeData,
     NFEmissionType,
+    NFEnvironment,
     NFIndicatorFinal,
     NFIndicatorPresence,
+    NFProcessType,
+    NFType,
+    NFVersion,
+    Payment,
+    Product,
+    Recipient,
+    Taxes,
+    Totals,
+    Transport,
 )
-
-from nfe2pdf.domain.exceptions import (
-    NFe2PDFError,
-    InvalidXmlError,
-    NotNFeError,
-    InvalidNFeVersionError,
-    MissingRequiredFieldError,
-    PDFGenerationError,
-    ConfigurationError,
-    FileAssociationError,
-    ValidationError,
-)
-
 from nfe2pdf.domain.ports import (
-    XMLParser,
+    ConfigManager,
+    FileAssociationManager,
     PDFGenerator,
     PDFGeneratorConfig,
-    FileAssociationManager,
-    ConfigManager,
+    XMLParser,
 )
 
 __all__ = [

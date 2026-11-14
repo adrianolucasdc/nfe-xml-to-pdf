@@ -1,4 +1,9 @@
 """Windows infrastructure package for nfe2pdf."""
 from __future__ import annotations
 
-# Registry and installer will be added in Commit 13
+from nfe2pdf.infrastructure.windows.registry import WindowsRegistryManager, is_windows
+
+__all__ = [
+    "WindowsRegistryManager",
+    "is_windows",
+]

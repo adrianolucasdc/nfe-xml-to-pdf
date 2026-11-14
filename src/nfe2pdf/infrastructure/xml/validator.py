@@ -2,8 +2,8 @@
 from __future__ import annotations
 
 from pathlib import Path
-from lxml import etree
 
+from lxml import etree
 
 NFE_NAMESPACE = "http://www.portalfiscal.inf.br/nfe"
 
@@ -78,10 +78,7 @@ class NFexmlValidator:
         if root.tag.startswith(f"{{{NFE_NAMESPACE}}}"):
             return True
         # Check descendants (quick check)
-        for elem in root.iter():
-            if elem.tag.startswith(f"{{{NFE_NAMESPACE}}}"):
-                return True
-        return False
+        return any(elem.tag.startswith(f"{{{NFE_NAMESPACE}}}") for elem in root.iter())
 
     def get_version(self, xml_content: bytes) -> str | None:
         """Extract NF-e version without full parsing."""

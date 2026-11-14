@@ -1,9 +1,9 @@
 """BFR Adapter - implements PDFGenerator port using BrazilFiscalReport."""
 from __future__ import annotations
 
+from nfe2pdf.domain.exceptions import PDFGenerationError
 from nfe2pdf.domain.models import NFeData
 from nfe2pdf.domain.ports import PDFGenerator, PDFGeneratorConfig
-from nfe2pdf.domain.exceptions import PDFGenerationError
 
 
 class BFRAdapter:
@@ -30,9 +30,9 @@ class BFRAdapter:
             self._layout_enum = DanfeLayout
         except ImportError as e:
             raise PDFGenerationError(
-                "BrazilFiscalReport não está instalado. Instale com: pip install brazilfiscalreport",
+                "BrazilFiscalReport nao instalado. pip install brazilfiscalreport",
                 original_error=e,
-            )
+            ) from e
 
     def _map_layout(self, layout: str):
         """Map our layout string to BFR DanfeLayout enum."""
@@ -66,7 +66,12 @@ class BFRAdapter:
     def _map_invoice_display(self, display: str):
         """Map invoice display to BFR InvoiceDisplay enum."""
         from brazilfiscalreport.danfe.config import InvoiceDisplay
-        return InvoiceDisplay.FULL_DETAILS if display == "full_details" else InvoiceDisplay.DUPLICATES_ONLY
+
+        return (
+            InvoiceDisplay.FULL_DETAILS
+            if display == "full_details"
+            else InvoiceDisplay.DUPLICATES_ONLY
+        )
 
     def _map_receipt_position(self, position: str):
         """Map receipt position to BFR ReceiptPosition enum."""
@@ -82,16 +87,16 @@ class BFRAdapter:
         """Convert our PDFGeneratorConfig to BFR DanfeConfig."""
         from brazilfiscalreport.danfe.config import (
             DanfeConfig,
-            Margins,
             DecimalConfig,
-            ProductDescriptionConfig,
             FooterStamp,
+            Margins,
+            ProductDescriptionConfig,
         )
 
         # Logo handling - BFR accepts path string, BytesIO, or bytes
         logo = config.logo_path
 
-        bfr_config = DanfeConfig(
+        return DanfeConfig(
             logo=logo,
             margins=Margins(
                 top=config.margins_mm[0],
@@ -129,7 +134,6 @@ class BFRAdapter:
             ),
             layout=self._map_layout(config.layout),
         )
-        return bfr_config
 
     def generate(self, nfe_data: NFeData, config: PDFGeneratorConfig) -> bytes:
         """Generate DANFE PDF bytes from NF-e data.
@@ -179,7 +183,7 @@ class BFRAdapter:
             raise PDFGenerationError(
                 f"Erro ao gerar PDF com BrazilFiscalReport: {e}",
                 original_error=e,
-            )
+            ) from e
 
 
 # Factory function for dependency injection

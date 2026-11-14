@@ -1,43 +1,42 @@
 """XML Parser implementation for NF-e using lxml with namespace support."""
 from __future__ import annotations
 
+from datetime import datetime
 from pathlib import Path
-from typing import Optional
+
 from lxml import etree
 
+from nfe2pdf.domain.exceptions import (
+    InvalidNFeVersionError,
+    InvalidXmlError,
+    MissingRequiredFieldError,
+    NotNFeError,
+)
 from nfe2pdf.domain.models import (
-    NFeData,
-    Header,
-    Emitter,
-    Recipient,
-    Detail,
-    Product,
-    Taxes,
-    Totals,
-    Transport,
-    Payment,
-    Address,
+    COFINS,
     ICMS,
     IPI,
     PIS,
-    COFINS,
     AdditionalInfo,
-    NFVersion,
-    NFType,
-    NFEnvironment,
-    NFProcessType,
+    Address,
+    Detail,
+    Emitter,
+    Header,
+    NFeData,
     NFEmissionType,
+    NFEnvironment,
     NFIndicatorFinal,
     NFIndicatorPresence,
+    NFProcessType,
+    NFType,
+    NFVersion,
+    Payment,
+    Product,
+    Recipient,
+    Taxes,
+    Totals,
+    Transport,
 )
-from nfe2pdf.domain.exceptions import (
-    InvalidXmlError,
-    NotNFeError,
-    InvalidNFeVersionError,
-    MissingRequiredFieldError,
-)
-from nfe2pdf.domain.ports import XMLParser
-
 
 # NF-e namespace
 NFE_NAMESPACE = "http://www.portalfiscal.inf.br/nfe"
@@ -60,7 +59,7 @@ class NFexmlParser:
         try:
             root = etree.fromstring(xml_content, parser=self._parser)
         except etree.XMLSyntaxError as e:
-            raise InvalidXmlError(f"XML malformado: {e}", original_error=e)
+            raise InvalidXmlError(f"XML malformado: {e}", original_error=e) from e
 
         # Valida se é NF-e (namespace correto)
         self._validate_nfe_root(root)
@@ -131,7 +130,7 @@ class NFexmlParser:
         try:
             xml_content = xml_path.read_bytes()
         except OSError as e:
-            raise InvalidXmlError(f"Erro ao ler arquivo {xml_path}: {e}", original_error=e)
+            raise InvalidXmlError(f"Erro ao ler arquivo {xml_path}: {e}", original_error=e) from e
         return self.parse(xml_content)
 
     def _validate_nfe_root(self, root: etree._Element) -> None:
@@ -148,17 +147,16 @@ class NFexmlParser:
                     namespace=root.nsmap.get("nfe") if root.nsmap else None,
                 )
 
-    def _find_inf_nfe(self, root: etree._Element) -> Optional[etree._Element]:
+    def _find_inf_nfe(self, root: etree._Element) -> etree._Element | None:
         """Encontra o elemento infNFe independentemente da estrutura (nfeProc ou NFe direto)."""
         # Tenta nfeProc/NFe/infNFe
         inf_nfe = root.find(".//nfe:NFe/nfe:infNFe", namespaces=NS)
         if inf_nfe is not None:
             return inf_nfe
         # Tenta NFe/infNFe (root direto)
-        inf_nfe = root.find(".//nfe:infNFe", namespaces=NS)
-        return inf_nfe
+        return root.find(".//nfe:infNFe", namespaces=NS)
 
-    def _validate_version(self, version: Optional[str]) -> None:
+    def _validate_version(self, version: str | None) -> None:
         """Valida se a versão é suportada."""
         if version != "4.00":
             raise InvalidNFeVersionError(
@@ -173,7 +171,7 @@ class NFexmlParser:
             return elem.text.strip()
         return default
 
-    def _get_decimal(self, parent: etree._Element, xpath: str) -> Optional[float]:
+    def _get_decimal(self, parent: etree._Element, xpath: str) -> float | None:
         """Extrai valor decimal via XPath."""
         text = self._get_text(parent, xpath)
         if text:
@@ -183,7 +181,7 @@ class NFexmlParser:
                 return None
         return None
 
-    def _parse_datetime(self, text: str) -> Optional[datetime]:
+    def _parse_datetime(self, text: str) -> datetime | None:
         """Parse datetime ISO 8601 com timezone."""
         try:
             # lxml retorna string, precisamos parsear
@@ -411,7 +409,9 @@ class NFexmlParser:
 
         icms_tot = total.find("nfe:ICMSTot", namespaces=NS)
         if icms_tot is None:
-            raise MissingRequiredFieldError("Elemento ICMSTot não encontrado", field_path="total/ICMSTot")
+            raise MissingRequiredFieldError(
+                "Elemento ICMSTot nao encontrado", field_path="total/ICMSTot"
+            )
 
         return Totals(
             vBC=self._get_decimal(icms_tot, "nfe:vBC", 0.0),
@@ -437,7 +437,7 @@ class NFexmlParser:
             vTotTrib=self._get_decimal(icms_tot, "nfe:vTotTrib"),
         )
 
-    def _parse_transport(self, inf_nfe: etree._Element) -> Optional[Transport]:
+    def _parse_transport(self, inf_nfe: etree._Element) -> Transport | None:
         """Parse transp (transporte)."""
         transp = inf_nfe.find("nfe:transp", namespaces=NS)
         if transp is None:
@@ -451,7 +451,7 @@ class NFexmlParser:
             vol=None,
         )
 
-    def _parse_payment(self, inf_nfe: etree._Element) -> Optional[list[Payment]]:
+    def _parse_payment(self, inf_nfe: etree._Element) -> list[Payment] | None:
         """Parse pag (pagamento)."""
         pag = inf_nfe.find("nfe:pag", namespaces=NS)
         if pag is None:
@@ -466,7 +466,7 @@ class NFexmlParser:
             ))
         return payments if payments else None
 
-    def _parse_additional_info(self, inf_nfe: etree._Element) -> Optional[AdditionalInfo]:
+    def _parse_additional_info(self, inf_nfe: etree._Element) -> AdditionalInfo | None:
         """Parse infAdic (informações adicionais)."""
         inf_adic = inf_nfe.find("nfe:infAdic", namespaces=NS)
         if inf_adic is None:
@@ -477,7 +477,7 @@ class NFexmlParser:
             infAdFisco=self._get_text(inf_adic, "nfe:infAdFisco") or None,
         )
 
-    def _get_int(self, parent: etree._Element, xpath: str) -> Optional[int]:
+    def _get_int(self, parent: etree._Element, xpath: str) -> int | None:
         """Extrai inteiro via XPath."""
         text = self._get_text(parent, xpath)
         if text:

@@ -3,7 +3,6 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
 
 from nfe2pdf.domain.models import NFeData
 from nfe2pdf.domain.ports import PDFGeneratorConfig
@@ -13,8 +12,8 @@ from nfe2pdf.domain.ports import PDFGeneratorConfig
 class GenerateDanfeInput:
     """Input for GenerateDanfeUseCase."""
     xml_path: Path
-    output_path: Optional[Path] = None
-    config: Optional[PDFGeneratorConfig] = None
+    output_path: Path | None = None
+    config: PDFGeneratorConfig | None = None
     overwrite: bool = False
 
 
@@ -24,7 +23,7 @@ class GenerateDanfeOutput:
     pdf_path: Path
     nfe_data: NFeData
     success: bool = True
-    error_message: Optional[str] = None
+    error_message: str | None = None
 
 
 @dataclass(frozen=True)

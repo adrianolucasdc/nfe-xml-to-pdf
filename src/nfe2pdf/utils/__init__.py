@@ -2,12 +2,12 @@
 from __future__ import annotations
 
 from nfe2pdf.utils.paths import (
+    ensure_config_dir,
     get_app_dir,
     get_config_dir,
     get_config_path,
-    get_logo_path,
-    ensure_config_dir,
     get_default_output_dir,
+    get_logo_path,
 )
 
 __all__ = [

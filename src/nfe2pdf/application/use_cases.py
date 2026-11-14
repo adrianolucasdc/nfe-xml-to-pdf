@@ -1,17 +1,6 @@
 """Use Cases for nfe2pdf application layer."""
 from __future__ import annotations
 
-from pathlib import Path
-from typing import Optional
-
-from nfe2pdf.domain.models import NFeData
-from nfe2pdf.domain.ports import XMLParser, PDFGenerator, PDFGeneratorConfig, FileAssociationManager
-from nfe2pdf.domain.exceptions import (
-    InvalidXmlError,
-    NotNFeError,
-    PDFGenerationError,
-    FileAssociationError,
-)
 from nfe2pdf.application.dto import (
     GenerateDanfeInput,
     GenerateDanfeOutput,
@@ -19,7 +8,13 @@ from nfe2pdf.application.dto import (
     InstallAssociationOutput,
 )
 from nfe2pdf.config import get_settings
-from nfe2pdf.utils.paths import get_default_output_dir
+from nfe2pdf.domain.exceptions import (
+    FileAssociationError,
+    InvalidXmlError,
+    NotNFeError,
+    PDFGenerationError,
+)
+from nfe2pdf.domain.ports import FileAssociationManager, PDFGenerator, XMLParser
 
 
 class GenerateDanfeUseCase:
@@ -29,7 +24,7 @@ class GenerateDanfeUseCase:
         self,
         xml_parser: XMLParser,
         pdf_generator: PDFGenerator,
-        validator: Optional[object] = None,  # NFexmlValidator - using object to avoid circular import
+        validator: object | None = None,  # NFexmlValidator - using object to avoid circular import
     ) -> None:
         self._xml_parser = xml_parser
         self._pdf_generator = pdf_generator
@@ -83,9 +78,9 @@ class GenerateDanfeUseCase:
         except (InvalidXmlError, NotNFeError, PDFGenerationError):
             raise
         except OSError as e:
-            raise PDFGenerationError(f"Erro de I/O: {e}", original_error=e)
+            raise PDFGenerationError(f"Erro de I/O: {e}", original_error=e) from e
         except Exception as e:
-            raise PDFGenerationError(f"Erro inesperado: {e}", original_error=e)
+            raise PDFGenerationError(f"Erro inesperado: {e}", original_error=e) from e
 
 
 class InstallAssociationUseCase:
@@ -113,4 +108,6 @@ class InstallAssociationUseCase:
         except FileAssociationError:
             raise
         except Exception as e:
-            raise FileAssociationError(f"Erro inesperado ao instalar associação: {e}", original_error=e)
+            raise FileAssociationError(
+                f"Erro inesperado ao instalar associação: {e}", original_error=e
+            ) from e

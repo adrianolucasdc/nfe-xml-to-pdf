@@ -1,10 +1,9 @@
 """ConfigManager implementation using Pydantic Settings."""
 from __future__ import annotations
 
-from pathlib import Path
 from typing import Any
 
-from nfe2pdf.config import Settings, get_settings, reload_settings
+from nfe2pdf.config import Settings, get_settings
 from nfe2pdf.domain.ports import ConfigManager
 
 

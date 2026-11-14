@@ -2,19 +2,24 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Optional, Any
+
 from pydantic import Field
-from pydantic_settings import BaseSettings, SettingsConfigDict, PydanticBaseSettingsSource, YamlConfigSettingsSource
+from pydantic_settings import (
+    BaseSettings,
+    PydanticBaseSettingsSource,
+    SettingsConfigDict,
+    YamlConfigSettingsSource,
+)
 
 from nfe2pdf.domain.ports import PDFGeneratorConfig
-from nfe2pdf.utils.paths import get_config_path, ensure_config_dir, get_logo_path
+from nfe2pdf.utils.paths import ensure_config_dir, get_config_path, get_logo_path
 
 
 class DanfeSettings(BaseSettings):
     """DANFE generation settings (maps to PDFGeneratorConfig)."""
 
     layout: str = Field(default="auto", description="Layout: auto | nt_2026_010 | moc_7_0")
-    logo: Optional[str] = Field(default=None, description="Caminho absoluto para logo .png/.jpg")
+    logo: str | None = Field(default=None, description="Caminho absoluto para logo .png/.jpg")
     margins_top: float = Field(default=5.0, alias="margins.top")
     margins_right: float = Field(default=5.0, alias="margins.right")
     margins_bottom: float = Field(default=5.0, alias="margins.bottom")
@@ -29,7 +34,7 @@ class DanfeSettings(BaseSettings):
     receipt_position: str = Field(default="top")
     carrier_receipt: bool = Field(default=False)
     footer_text: str = Field(default="")
-    footer_logo: Optional[str] = Field(default=None)
+    footer_logo: str | None = Field(default=None)
     footer_height: float = Field(default=5.0)
     footer_logo_max_width: float = Field(default=20.0)
     footer_spacing: float = Field(default=1.0)
@@ -75,8 +80,8 @@ class DanfeSettings(BaseSettings):
 class LoggingSettings(BaseSettings):
     """Logging settings."""
 
-    level: str = Field(default="INFO", description="DEBUG | INFO | WARNING | ERROR")
-    file: Optional[str] = Field(default=None, description="Caminho do arquivo de log (None = só console)")
+    level: str = Field(default="INFO", description="Log level: DEBUG | INFO | WARNING | ERROR")
+    file: str | None = Field(default=None, description="Log file path (None = console only)")
     rotation: str = Field(default="10 MB")
     retention: str = Field(default="7 days")
 
@@ -84,8 +89,10 @@ class LoggingSettings(BaseSettings):
 class OutputSettings(BaseSettings):
     """Output settings."""
 
-    default_dir: Optional[str] = Field(default=None, description="Diretório padrão para PDFs (None = mesma pasta do XML)")
-    overwrite: bool = Field(default=False, description="Sobrescrever arquivo existente sem perguntar")
+    default_dir: str | None = Field(
+        default=None, description="Default output dir for PDFs (None = same dir as XML)"
+    )
+    overwrite: bool = Field(default=False, description="Overwrite existing file without asking")
 
 
 class Settings(BaseSettings):
@@ -129,12 +136,12 @@ class Settings(BaseSettings):
         )
 
     @classmethod
-    def load(cls) -> "Settings":
+    def load(cls) -> Settings:
         """Load settings from config file and environment."""
         ensure_config_dir()
         return cls()
 
-    def save(self, path: Optional[Path] = None) -> None:
+    def save(self, path: Path | None = None) -> None:
         """Save current settings to YAML file."""
         import yaml
 
@@ -153,7 +160,7 @@ class Settings(BaseSettings):
 
 
 # Global settings instance (lazy loaded)
-_settings: Optional[Settings] = None
+_settings: Settings | None = None
 
 
 def get_settings() -> Settings:
