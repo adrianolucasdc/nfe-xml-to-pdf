@@ -9,7 +9,8 @@ from nfe2pdf.cli import main
 if __name__ == "__main__":
     # Check for direct file execution (Windows "Abrir com...")
     # This runs before Click parses arguments
-    if len(sys.argv) == 2:
+    # We check if the first argument (after script name) looks like an XML file
+    if len(sys.argv) >= 2:
         arg = sys.argv[1]
         # Not an option, not a known subcommand, and looks like an XML file
         if not arg.startswith("-") and arg not in (
@@ -24,6 +25,6 @@ if __name__ == "__main__":
             xml_path = Path(arg)
             if xml_path.exists() and xml_path.suffix.lower() == ".xml":
                 # Direct execution: invoke generate logic directly
-                sys.argv = [sys.argv[0], "generate", arg]
+                sys.argv = [sys.argv[0], "generate"] + sys.argv[1:]
 
     main()
