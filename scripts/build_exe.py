@@ -2,9 +2,7 @@
 """Build standalone .exe with PyInstaller (stub - implementado no Commit 11)."""
 from __future__ import annotations
 
-import subprocess
 import sys
-from pathlib import Path
 
 
 def main() -> int:

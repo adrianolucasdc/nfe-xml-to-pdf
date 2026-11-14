@@ -353,11 +353,16 @@ class NFexmlParser:
         ipi = None
         ipi_elem = imposto.find("nfe:IPI", namespaces=NS)
         if ipi_elem is not None:
-            ipi_child = ipi_elem.find("./*", namespaces=NS)  # IPITrib, IPINT, etc.
+            # Find IPI type element (IPINT, IPITrib, etc.) - skip cEnq which is a direct child
+            ipi_child = None
+            for child in ipi_elem:
+                if child.tag.endswith("}IPINT") or child.tag.endswith("}IPITrib"):
+                    ipi_child = child
+                    break
             if ipi_child is not None:
                 ipi = IPI(
                     CST=self._get_text(ipi_child, "nfe:CST"),
-                    cEnq=self._get_text(ipi_child, "nfe:cEnq") or None,
+                    cEnq=self._get_text(ipi_elem, "nfe:cEnq") or None,
                     vBC=self._get_decimal(ipi_child, "nfe:vBC"),
                     pIPI=self._get_decimal(ipi_child, "nfe:pIPI"),
                     vIPI=self._get_decimal(ipi_child, "nfe:vIPI"),
@@ -367,7 +372,13 @@ class NFexmlParser:
         pis = None
         pis_elem = imposto.find("nfe:PIS", namespaces=NS)
         if pis_elem is not None:
-            pis_child = pis_elem.find("./*", namespaces=NS)
+            # Find PIS type element (PISAliq, PISQtde, PISNT, PISOutr, etc.)
+            pis_child = None
+            pis_types = ("}PISAliq", "}PISQtde", "}PISNT", "}PISOutr", "}PISSN")
+            for child in pis_elem:
+                if "PIS" in child.tag and child.tag.endswith(pis_types):
+                    pis_child = child
+                    break
             if pis_child is not None:
                 pis = PIS(
                     CST=self._get_text(pis_child, "nfe:CST"),
@@ -382,7 +393,13 @@ class NFexmlParser:
         cofins = None
         cofins_elem = imposto.find("nfe:COFINS", namespaces=NS)
         if cofins_elem is not None:
-            cofins_child = cofins_elem.find("./*", namespaces=NS)
+            # Find COFINS type element (COFINSAliq, COFINSQtde, COFINSNT, COFINSOutr, etc.)
+            cofins_child = None
+            cofins_types = ("}COFINSAliq", "}COFINSQtde", "}COFINSNT", "}COFINSOutr", "}COFINSSN")
+            for child in cofins_elem:
+                if "COFINS" in child.tag and child.tag.endswith(cofins_types):
+                    cofins_child = child
+                    break
             if cofins_child is not None:
                 cofins = COFINS(
                     CST=self._get_text(cofins_child, "nfe:CST"),
@@ -395,10 +412,10 @@ class NFexmlParser:
 
         return Taxes(
             vTotTrib=v_tot_trib,
-            ICMS=icms,
-            IPI=ipi,
-            PIS=pis,
-            COFINS=cofins,
+            icms=icms,
+            ipi=ipi,
+            pis=pis,
+            cofins=cofins,
         )
 
     def _parse_totals(self, inf_nfe: etree._Element) -> Totals:

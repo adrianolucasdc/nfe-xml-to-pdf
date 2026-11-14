@@ -1,8 +1,9 @@
 """Pytest configuration and fixtures for nfe2pdf."""
 from __future__ import annotations
 
-import pytest
 from pathlib import Path
+
+import pytest
 
 
 @pytest.fixture(scope="session")
