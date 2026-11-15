@@ -1,4 +1,5 @@
 """Integration tests for full NF-e to PDF pipeline."""
+
 from __future__ import annotations
 
 import importlib.util
@@ -23,6 +24,7 @@ def _get_extract_text():
     if not PDFMINER_AVAILABLE:
         pytest.skip("pdfminer.six not installed")
     from pdfminer.high_level import extract_text
+
     return extract_text
 
 
@@ -198,11 +200,13 @@ class TestGenerateDanfeUseCaseIntegration:
 
         output_path = tmp_path / "usecase_output.pdf"
 
-        result = use_case.execute(GenerateDanfeInput(
-            xml_path=FIXTURE_PATH,
-            output_path=output_path,
-            overwrite=True,
-        ))
+        result = use_case.execute(
+            GenerateDanfeInput(
+                xml_path=FIXTURE_PATH,
+                output_path=output_path,
+                overwrite=True,
+            )
+        )
 
         assert result.success is True
         assert result.pdf_path == output_path
@@ -232,11 +236,13 @@ class TestGenerateDanfeUseCaseIntegration:
         xml_path = tmp_path / "nota.xml"
         xml_path.write_bytes(FIXTURE_PATH.read_bytes())
 
-        result = use_case.execute(GenerateDanfeInput(
-            xml_path=xml_path,
-            output_path=None,  # Should default to nota.pdf
-            overwrite=True,
-        ))
+        result = use_case.execute(
+            GenerateDanfeInput(
+                xml_path=xml_path,
+                output_path=None,  # Should default to nota.pdf
+                overwrite=True,
+            )
+        )
 
         expected_output = tmp_path / "nota.pdf"
         assert result.success is True
@@ -264,11 +270,13 @@ class TestGenerateDanfeUseCaseIntegration:
         output_path.write_bytes(b"existing content")
 
         with pytest.raises(PDFGenerationError) as exc_info:
-            use_case.execute(GenerateDanfeInput(
-                xml_path=FIXTURE_PATH,
-                output_path=output_path,
-                overwrite=False,  # Should fail
-            ))
+            use_case.execute(
+                GenerateDanfeInput(
+                    xml_path=FIXTURE_PATH,
+                    output_path=output_path,
+                    overwrite=False,  # Should fail
+                )
+            )
 
         assert "já existe" in str(exc_info.value)
         # Original content preserved
@@ -292,10 +300,12 @@ class TestGenerateDanfeUseCaseIntegration:
         )
 
         with pytest.raises(Exception) as exc_info:
-            use_case.execute(GenerateDanfeInput(
-                xml_path=invalid_xml,
-                output_path=tmp_path / "out.pdf",
-            ))
+            use_case.execute(
+                GenerateDanfeInput(
+                    xml_path=invalid_xml,
+                    output_path=tmp_path / "out.pdf",
+                )
+            )
 
         # Should fail during parsing or validation
         assert exc_info.value is not None
@@ -426,9 +436,13 @@ class TestCLIIntegration:
 
         result = subprocess.run(
             [
-                sys.executable, "-m", "nfe2pdf", "generate",
+                sys.executable,
+                "-m",
+                "nfe2pdf",
+                "generate",
                 str(FIXTURE_PATH),
-                "-o", str(output_path),
+                "-o",
+                str(output_path),
             ],
             capture_output=True,
             text=True,
@@ -458,9 +472,12 @@ class TestCLIIntegration:
         # Direct execution: nfe2pdf arquivo.xml -o output.pdf
         result = subprocess.run(
             [
-                sys.executable, "-m", "nfe2pdf",
+                sys.executable,
+                "-m",
+                "nfe2pdf",
                 str(FIXTURE_PATH),
-                "-o", str(output_path),
+                "-o",
+                str(output_path),
             ],
             capture_output=True,
             text=True,

@@ -1,4 +1,5 @@
 """PDF infrastructure package for nfe2pdf."""
+
 from __future__ import annotations
 
 from nfe2pdf.infrastructure.pdf.base import PDFGeneratorBase

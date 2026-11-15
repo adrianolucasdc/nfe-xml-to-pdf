@@ -1,4 +1,5 @@
 """Domain ports (interfaces) for nfe2pdf - Strategy Pattern."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -11,17 +12,18 @@ from nfe2pdf.domain.models import NFeData
 @dataclass(frozen=True)
 class PDFGeneratorConfig:
     """Configuration for PDF generation (independent of BrazilFiscalReport)."""
-    layout: str = "auto"                    # auto | nt_2026_010 | moc_7_0
+
+    layout: str = "auto"  # auto | nt_2026_010 | moc_7_0
     logo_path: str | None = None
     margins_mm: tuple[float, float, float, float] = (5, 5, 5, 5)  # top, right, bottom, left
-    font_type: str = "times"                # times | courier
-    font_size: str = "small"                # small | big
+    font_type: str = "times"  # times | courier
+    font_size: str = "small"  # small | big
     tax_configuration: str = "standard_icms_ipi"
     invoice_display: str = "full_details"
     display_pis_cofins: bool = False
     watermark_cancelled: bool = True
     infcpl_semicolon_newline: bool = False
-    receipt_position: str = "top"           # top | bottom | left
+    receipt_position: str = "top"  # top | bottom | left
     carrier_receipt: bool = False
     # Footer stamp
     footer_text: str = ""

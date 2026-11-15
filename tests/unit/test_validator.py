@@ -1,4 +1,5 @@
 """Unit tests for XML validator."""
+
 from __future__ import annotations
 
 from nfe2pdf.infrastructure.xml.validator import NFexmlValidator

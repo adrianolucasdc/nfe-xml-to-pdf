@@ -1,4 +1,5 @@
 """Entry point: python -m nfe2pdf"""
+
 from __future__ import annotations
 
 import sys

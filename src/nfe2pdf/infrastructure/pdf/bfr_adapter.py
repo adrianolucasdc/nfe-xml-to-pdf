@@ -1,4 +1,5 @@
 """BFR Adapter - implements PDFGenerator port using BrazilFiscalReport."""
+
 from __future__ import annotations
 
 from nfe2pdf.domain.exceptions import PDFGenerationError
@@ -25,6 +26,7 @@ class BFRAdapter:
         try:
             from brazilfiscalreport.danfe import Danfe
             from brazilfiscalreport.danfe.config import DanfeConfig, DanfeLayout
+
             self._danfe_class = Danfe
             self._danfe_config_class = DanfeConfig
             self._layout_enum = DanfeLayout
@@ -46,16 +48,19 @@ class BFRAdapter:
     def _map_font_type(self, font_type: str):
         """Map font type to BFR FontType enum."""
         from brazilfiscalreport.danfe.config import FontType
+
         return FontType.TIMES if font_type.lower() == "times" else FontType.COURIER
 
     def _map_font_size(self, font_size: str):
         """Map font size to BFR FontSize enum."""
         from brazilfiscalreport.danfe.config import FontSize
+
         return FontSize.BIG if font_size.lower() == "big" else FontSize.SMALL
 
     def _map_tax_config(self, tax_config: str):
         """Map tax configuration to BFR TaxConfiguration enum."""
         from brazilfiscalreport.danfe.config import TaxConfiguration
+
         mapping = {
             "standard_icms_ipi": TaxConfiguration.STANDARD_ICMS_IPI,
             "icms_st": TaxConfiguration.ICMS_ST,
@@ -76,6 +81,7 @@ class BFRAdapter:
     def _map_receipt_position(self, position: str):
         """Map receipt position to BFR ReceiptPosition enum."""
         from brazilfiscalreport.danfe.config import ReceiptPosition
+
         mapping = {
             "top": ReceiptPosition.TOP,
             "bottom": ReceiptPosition.BOTTOM,

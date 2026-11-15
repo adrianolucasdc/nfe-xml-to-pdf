@@ -1,4 +1,5 @@
 """XML Validator for NF-e - basic structural validation before parsing."""
+
 from __future__ import annotations
 
 from pathlib import Path

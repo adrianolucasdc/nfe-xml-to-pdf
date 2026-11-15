@@ -1,4 +1,5 @@
 """CLI for nfe2pdf - Conversor NF-e XML para PDF (DANFE)."""
+
 from __future__ import annotations
 
 import sys
@@ -46,7 +47,7 @@ def handle_error(e: Exception, ctx: click.Context) -> None:
     """Handle exceptions and exit with appropriate code."""
     if isinstance(e, NFe2PDFError):
         logger.error(str(e))
-        if hasattr(e, 'original_error') and e.original_error:
+        if hasattr(e, "original_error") and e.original_error:
             logger.debug(f"Original error: {e.original_error}")
     else:
         logger.exception("Erro inesperado")
@@ -82,7 +83,8 @@ def main(ctx: click.Context, log_level: str) -> None:
     required=True,
 )
 @click.option(
-    "-o", "--output",
+    "-o",
+    "--output",
     type=click.Path(dir_okay=False, path_type=Path),
     help="Caminho do arquivo PDF de saída (padrão: mesmo nome do XML com extensão .pdf)",
 )
@@ -209,7 +211,7 @@ def generate(
 def config(show_path: bool, edit: bool, reset: bool) -> None:
     """Gerenciar configuração do nfe2pdf.
 
-    A configuração é salva em %APPDATA%\nfe2pdf\config.yaml
+    A configuração é salva em %APPDATA%\\nfe2pdf\\config.yaml
     e pode ser sobrescrita por variáveis de ambiente NFE2PDF_*.
     """
     import os
@@ -249,9 +251,7 @@ def config(show_path: bool, edit: bool, reset: bool) -> None:
     settings = get_settings()
     import yaml
 
-    dumped = yaml.dump(
-        settings.model_dump(exclude_none=True), allow_unicode=True, sort_keys=False
-    )
+    dumped = yaml.dump(settings.model_dump(exclude_none=True), allow_unicode=True, sort_keys=False)
     click.echo(f"Arquivo: {config_path}")
     click.echo("---")
     click.echo(dumped)

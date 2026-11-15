@@ -1,4 +1,5 @@
 """Unit tests for XML parser."""
+
 from __future__ import annotations
 
 from decimal import Decimal

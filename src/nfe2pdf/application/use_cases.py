@@ -1,4 +1,5 @@
 """Use Cases for nfe2pdf application layer."""
+
 from __future__ import annotations
 
 from nfe2pdf.application.dto import (
@@ -94,15 +95,13 @@ class InstallAssociationUseCase:
         try:
             if self._association_manager.is_associated(".xml") and not input_data.force:
                 return InstallAssociationOutput(
-                    success=True,
-                    message="Associação .xml já existe. Use --force para reinstalar."
+                    success=True, message="Associação .xml já existe. Use --force para reinstalar."
                 )
 
             self._association_manager.associate(".xml", "NF-e XML Document")
 
             return InstallAssociationOutput(
-                success=True,
-                message="Associação .xml instalada com sucesso."
+                success=True, message="Associação .xml instalada com sucesso."
             )
 
         except FileAssociationError:

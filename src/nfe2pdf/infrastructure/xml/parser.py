@@ -1,4 +1,5 @@
 """XML Parser implementation for NF-e using lxml with namespace support."""
+
 from __future__ import annotations
 
 from datetime import datetime
@@ -51,7 +52,7 @@ class NFexmlParser:
         self._parser = etree.XMLParser(
             remove_blank_text=True,
             resolve_entities=False,  # Previne XXE
-            huge_tree=False,         # Limita tamanho da árvore
+            huge_tree=False,  # Limita tamanho da árvore
         )
 
     def parse(self, xml_content: bytes) -> NFeData:
@@ -139,8 +140,10 @@ class NFexmlParser:
         if NFE_NAMESPACE not in (root.nsmap.values() if root.nsmap else []):
             # Tenta encontrar namespace no tag
             tag = root.tag
-            if not (tag.startswith("{http://www.portalfiscal.inf.br/nfe}") or
-                    tag in ("nfeProc", "NFe", "protNFe")):
+            if not (
+                tag.startswith("{http://www.portalfiscal.inf.br/nfe}")
+                or tag in ("nfeProc", "NFe", "protNFe")
+            ):
                 raise NotNFeError(
                     "XML não é uma NF-e (namespace incorreto)",
                     root_tag=tag,
@@ -187,6 +190,7 @@ class NFexmlParser:
             # lxml retorna string, precisamos parsear
             # Formato: 2024-01-15T10:00:00-03:00
             from datetime import datetime
+
             return datetime.fromisoformat(text)
         except (ValueError, AttributeError):
             return None
@@ -225,9 +229,20 @@ class NFexmlParser:
             raise MissingRequiredFieldError("Elemento emit não encontrado", field_path="emit")
 
         ender_emit = emit.find("nfe:enderEmit", namespaces=NS)
-        address = self._parse_address(ender_emit) if ender_emit is not None else Address(
-            street="", number="", neighborhood="", city_code="", city_name="",
-            state="", zip_code="", country_code="1058", country_name="BRASIL"
+        address = (
+            self._parse_address(ender_emit)
+            if ender_emit is not None
+            else Address(
+                street="",
+                number="",
+                neighborhood="",
+                city_code="",
+                city_name="",
+                state="",
+                zip_code="",
+                country_code="1058",
+                country_name="BRASIL",
+            )
         )
 
         return Emitter(
@@ -476,11 +491,13 @@ class NFexmlParser:
 
         payments = []
         for det_pag in pag.findall("nfe:detPag", namespaces=NS):
-            payments.append(Payment(
-                tPag=int(self._get_text(det_pag, "nfe:tPag", "90")),
-                vPag=self._get_decimal(det_pag, "nfe:vPag", 0.0),
-                card=None,
-            ))
+            payments.append(
+                Payment(
+                    tPag=int(self._get_text(det_pag, "nfe:tPag", "90")),
+                    vPag=self._get_decimal(det_pag, "nfe:vPag", 0.0),
+                    card=None,
+                )
+            )
         return payments if payments else None
 
     def _parse_additional_info(self, inf_nfe: etree._Element) -> AdditionalInfo | None:

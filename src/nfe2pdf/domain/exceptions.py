@@ -1,9 +1,11 @@
 """Custom exceptions for nfe2pdf domain."""
+
 from __future__ import annotations
 
 
 class NFe2PDFError(Exception):
     """Base exception for nfe2pdf errors."""
+
     pass
 
 

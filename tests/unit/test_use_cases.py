@@ -1,4 +1,5 @@
 """Unit tests for use cases."""
+
 from __future__ import annotations
 
 from decimal import Decimal

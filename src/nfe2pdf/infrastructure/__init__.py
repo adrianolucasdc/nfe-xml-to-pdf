@@ -1,4 +1,5 @@
 """Infrastructure package for nfe2pdf."""
+
 from __future__ import annotations
 
 from nfe2pdf.infrastructure.config_manager import PydanticConfigManager, create_config_manager

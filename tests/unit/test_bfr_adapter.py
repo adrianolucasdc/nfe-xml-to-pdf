@@ -1,4 +1,5 @@
 """Unit tests for BFR adapter."""
+
 from __future__ import annotations
 
 from decimal import Decimal
@@ -371,9 +372,7 @@ class TestBFRAdapter:
             mock_font_type.TIMES = "TIMES"
             mock_font_type.COURIER = "COURIER"
 
-            with patch(
-                "brazilfiscalreport.danfe.config.FontType", mock_font_type
-            ):
+            with patch("brazilfiscalreport.danfe.config.FontType", mock_font_type):
                 assert adapter._map_font_type("times") == "TIMES"
                 assert adapter._map_font_type("TIMES") == "TIMES"
                 assert adapter._map_font_type("courier") == "COURIER"
@@ -388,9 +387,7 @@ class TestBFRAdapter:
             mock_font_size.SMALL = "SMALL"
             mock_font_size.BIG = "BIG"
 
-            with patch(
-                "brazilfiscalreport.danfe.config.FontSize", mock_font_size
-            ):
+            with patch("brazilfiscalreport.danfe.config.FontSize", mock_font_size):
                 assert adapter._map_font_size("small") == "SMALL"
                 assert adapter._map_font_size("SMALL") == "SMALL"
                 assert adapter._map_font_size("big") == "BIG"
@@ -407,10 +404,18 @@ class TestBFRAdapter:
         class MockModule:
             def __getattr__(self, name):
                 bfr_attrs = (
-                    "Danfe", "DanfeConfig", "DanfeLayout", "FontType",
-                    "FontSize", "TaxConfiguration", "InvoiceDisplay",
-                    "ReceiptPosition", "DecimalConfig", "FooterStamp",
-                    "Margins", "ProductDescriptionConfig",
+                    "Danfe",
+                    "DanfeConfig",
+                    "DanfeLayout",
+                    "FontType",
+                    "FontSize",
+                    "TaxConfiguration",
+                    "InvoiceDisplay",
+                    "ReceiptPosition",
+                    "DecimalConfig",
+                    "FooterStamp",
+                    "Margins",
+                    "ProductDescriptionConfig",
                 )
                 if name in bfr_attrs:
                     raise ImportError("No module named 'brazilfiscalreport'")

@@ -1,4 +1,5 @@
 """nfe2pdf - Conversor NF-e XML para PDF (DANFE)."""
+
 from __future__ import annotations
 
 from nfe2pdf.config import Settings, get_settings, reload_settings

@@ -1,4 +1,5 @@
 """Configuration management using Pydantic Settings (YAML + env vars)."""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -151,7 +152,7 @@ class Settings(BaseSettings):
         # Convert to dict excluding None values for cleaner YAML
         data = self.model_dump(exclude_none=True)
 
-        with open(config_path, "w", encoding="utf-8") as f:
+        with config_path.open("w", encoding="utf-8") as f:
             yaml.safe_dump(data, f, allow_unicode=True, sort_keys=False)
 
     def get_pdf_generator_config(self) -> PDFGeneratorConfig:

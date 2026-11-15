@@ -1,4 +1,5 @@
 """Application package for nfe2pdf - Use Cases and DTOs."""
+
 from __future__ import annotations
 
 from nfe2pdf.application.dto import (

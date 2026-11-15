@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 """Generate default logo for nfe2pdf package."""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -17,10 +18,10 @@ def generate_logo(output_path: Path, size: int = 120) -> None:
     draw = ImageDraw.Draw(img)
 
     # Cores
-    BLUE = (30, 136, 229)       # Material Blue 500
+    BLUE = (30, 136, 229)  # Material Blue 500
     DARK_BLUE = (21, 101, 192)  # Material Blue 700
     WHITE = (255, 255, 255)
-    GREEN = (46, 204, 113)      # Verde para PDF
+    GREEN = (46, 204, 113)  # Verde para PDF
     GRAY = (189, 189, 189)
 
     padding = size // 8

@@ -1,4 +1,5 @@
 """Base PDF Generator abstract class (optional - Protocol is primary)."""
+
 from __future__ import annotations
 
 from abc import ABC, abstractmethod

@@ -1,4 +1,5 @@
 """Windows Registry manager for file associations."""
+
 from __future__ import annotations
 
 import contextlib
@@ -136,6 +137,7 @@ class WindowsRegistryManager:
         """Notify Windows Shell of association change."""
         try:
             import ctypes
+
             # SHChangeNotify with SHCNE_ASSOCCHANGED
             ctypes.windll.shell32.SHChangeNotify(0x08000000, 0x0000, None, None)
         except Exception:

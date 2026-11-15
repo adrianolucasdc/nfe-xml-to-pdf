@@ -1,4 +1,5 @@
 """Domain package for nfe2pdf - Core business logic."""
+
 from __future__ import annotations
 
 from nfe2pdf.domain.exceptions import (

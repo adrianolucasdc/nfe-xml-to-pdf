@@ -1,4 +1,5 @@
 """Domain models for NF-e data structures using Pydantic v2."""
+
 from __future__ import annotations
 
 from datetime import datetime
@@ -11,17 +12,20 @@ from pydantic.config import ConfigDict
 
 class NFVersion(StrEnum):
     """Supported NF-e versions."""
+
     V400 = "4.00"
 
 
 class NFType(int, Enum):
     """NF-e type: 0=Entrada, 1=Saída."""
+
     ENTRADA = 0
     SAIDA = 1
 
 
 class NFEnvironment(int, Enum):
     """Environment: 1=Produção, 2=Homologação."""
+
     PRODUCAO = 1
     HOMOLOGACAO = 2
 
@@ -33,6 +37,7 @@ class NFProcessType(int, Enum):
     3=Contingencia DPEC, 4=Contingencia EPEC, 5=Contingencia FS-DA,
     6=Contingencia SVC-AN, 7=Contingencia SVC-RS, 9=Contingencia off-line.
     """
+
     NORMAL = 0
     CONTINGENCIA_FS = 1
     CONTINGENCIA_SCAN = 2
@@ -51,6 +56,7 @@ class NFEmissionType(int, Enum):
     4=Contingencia DPEC, 5=Contingencia FS-DA, 6=Contingencia SVC-AN,
     7=Contingencia SVC-RS, 9=Contingencia off-line.
     """
+
     NORMAL = 1
     CONTINGENCIA_FS_IA = 2
     CONTINGENCIA_SCAN = 3
@@ -63,6 +69,7 @@ class NFEmissionType(int, Enum):
 
 class NFIndicatorFinal(int, Enum):
     """Final consumer indicator: 0=Não, 1=Consumidor final."""
+
     NAO = 0
     SIM = 1
 
@@ -73,6 +80,7 @@ class NFIndicatorPresence(int, Enum):
     0=Nao se aplica, 1=Presencial, 2=Internet, 3=Teleatendimento,
     4=NFC-e, 9=Outros.
     """
+
     NAO_SE_APLICA = 0
     PRESENCIAL = 1
     INTERNET = 2
@@ -83,6 +91,7 @@ class NFIndicatorPresence(int, Enum):
 
 class Address(BaseModel):
     """Address model for emitter, recipient, delivery, etc."""
+
     model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
     street: str = Field(alias="xLgr", description="Logradouro")
@@ -100,6 +109,7 @@ class Address(BaseModel):
 
 class Emitter(BaseModel):
     """Emitter (emitente) model."""
+
     model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
     cnpj: str | None = Field(default=None, alias="CNPJ", description="CNPJ do emitente")
@@ -122,6 +132,7 @@ class Emitter(BaseModel):
 
 class Recipient(BaseModel):
     """Recipient (destinatario) model."""
+
     model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
     cnpj: str | None = Field(default=None, alias="CNPJ", description="CNPJ do destinatario")
@@ -143,6 +154,7 @@ class Recipient(BaseModel):
 
 class Product(BaseModel):
     """Product/Item (det/prod) model."""
+
     model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
     item_number: int = Field(alias="nItem", description="Número do item")
@@ -169,9 +181,7 @@ class Product(BaseModel):
     discount_value: Decimal | None = Field(
         default=None, alias="vDesc", description="Valor do desconto"
     )
-    other_value: Decimal | None = Field(
-        default=None, alias="vOutro", description="Outras despesas"
-    )
+    other_value: Decimal | None = Field(default=None, alias="vOutro", description="Outras despesas")
     total_indicator: int = Field(alias="indTot", description="Indicador total: 1=Sim, 0=Nao")
     additional_info: str | None = Field(
         default=None, alias="infAdProd", description="Informacoes adicionais"
@@ -180,6 +190,7 @@ class Product(BaseModel):
 
 class ICMS(BaseModel):
     """ICMS tax model (simplified)."""
+
     model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
     cst: str = Field(alias="CST", description="CST/CSOSN")
@@ -193,14 +204,10 @@ class ICMS(BaseModel):
         default=None, alias="vBCST", description="Valor base calculo ST"
     )
     p_st: Decimal | None = Field(default=None, alias="pST", description="Aliquota ST")
-    v_icms_st: Decimal | None = Field(
-        default=None, alias="vICMSST", description="Valor ICMS ST"
-    )
+    v_icms_st: Decimal | None = Field(default=None, alias="vICMSST", description="Valor ICMS ST")
     p_fcp: Decimal | None = Field(default=None, alias="pFCP", description="Percentual FCP")
     v_fcp: Decimal | None = Field(default=None, alias="vFCP", description="Valor FCP")
-    v_fcp_st: Decimal | None = Field(
-        default=None, alias="vFCPST", description="Valor FCP ST"
-    )
+    v_fcp_st: Decimal | None = Field(default=None, alias="vFCPST", description="Valor FCP ST")
     v_bc_fcp_st: Decimal | None = Field(
         default=None, alias="vBCFCPST", description="Base calculo FCP ST"
     )
@@ -208,6 +215,7 @@ class ICMS(BaseModel):
 
 class IPI(BaseModel):
     """IPI tax model (simplified)."""
+
     model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
     cst: str = Field(alias="CST", description="CST IPI")
@@ -219,6 +227,7 @@ class IPI(BaseModel):
 
 class PIS(BaseModel):
     """PIS tax model (simplified)."""
+
     model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
     cst: str = Field(alias="CST", description="CST PIS")
@@ -235,6 +244,7 @@ class PIS(BaseModel):
 
 class COFINS(BaseModel):
     """COFINS tax model (simplified)."""
+
     model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
     cst: str = Field(alias="CST", description="CST COFINS")
@@ -251,6 +261,7 @@ class COFINS(BaseModel):
 
 class Taxes(BaseModel):
     """Taxes (imposto) model for a product."""
+
     model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
     total_tax_value: Decimal | None = Field(
@@ -265,6 +276,7 @@ class Taxes(BaseModel):
 
 class Detail(BaseModel):
     """Detail item (det) combining product and taxes."""
+
     model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
     item_number: int = Field(alias="nItem", description="Número do item")
@@ -274,6 +286,7 @@ class Detail(BaseModel):
 
 class Totals(BaseModel):
     """Total values (total/ICMSTot)."""
+
     model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
     v_bc: Decimal = Field(alias="vBC", description="Base calculo ICMS")
@@ -313,13 +326,13 @@ class Totals(BaseModel):
 
 class Transport(BaseModel):
     """Transport (transp) model."""
+
     model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
     freight_modality: int = Field(
         alias="modFrete",
         description=(
-            "Modalidade frete: 0=Emitente, 1=Destinatario, "
-            "2=Terceiros, 3=Proprio, 9=Sem frete"
+            "Modalidade frete: 0=Emitente, 1=Destinatario, 2=Terceiros, 3=Proprio, 9=Sem frete"
         ),
     )
     carrier: dict | None = Field(
@@ -332,6 +345,7 @@ class Transport(BaseModel):
 
 class Payment(BaseModel):
     """Payment (pag) model."""
+
     model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
     payment_type: int = Field(
@@ -349,6 +363,7 @@ class Payment(BaseModel):
 
 class Header(BaseModel):
     """Header (ide) model."""
+
     model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
     state_code: int = Field(alias="cUF", description="Codigo UF emitente")
@@ -403,6 +418,7 @@ class Header(BaseModel):
 
 class AdditionalInfo(BaseModel):
     """Additional information (infAdic)."""
+
     model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
     complementary: str | None = Field(
@@ -415,6 +431,7 @@ class AdditionalInfo(BaseModel):
 
 class NFeData(BaseModel):
     """Complete NF-e data model (infNFe + protNFe)."""
+
     model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
     # Identificação
@@ -433,9 +450,7 @@ class NFeData(BaseModel):
 
     # Autorizacao (vem no protNFe)
     access_key: str | None = Field(default=None, description="Chave acesso (44 digitos)")
-    protocol_number: str | None = Field(
-        default=None, description="Numero protocolo autorizacao"
-    )
+    protocol_number: str | None = Field(default=None, description="Numero protocolo autorizacao")
     protocol_date: datetime | None = Field(default=None, description="Data/hora protocolo")
     status_code: int | None = Field(
         default=None, description="Codigo status (100=Autorizado, 101=Cancelada, etc.)"
@@ -466,7 +481,7 @@ class NFeData(BaseModel):
         if not self.access_key:
             return ""
         key = self.access_key
-        return " ".join(key[i:i+4] for i in range(0, len(key), 4))
+        return " ".join(key[i : i + 4] for i in range(0, len(key), 4))
 
     @property
     def emitter_cnpj_formatted(self) -> str:
