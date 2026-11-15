@@ -23,10 +23,10 @@ AppUpdatesURL={#MyAppURL}
 DefaultDirName={pf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
-LicenseFile=LICENSE
-OutputDir=installer_output
+LicenseFile=..\LICENSE
+OutputDir=..\installer_output
 OutputBaseFilename=nfe2pdf_setup_v{#MyAppVersion}
-SetupIconFile=src\nfe2pdf\assets\logo.png
+; SetupIconFile=..\src\nfe2pdf\assets\logo.png  ; Requires .ico format
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
@@ -42,9 +42,9 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Name: "fileassoc"; Description: "Associar arquivos .xml (NF-e) ao nfe2pdf"; GroupDescription: "{cm:AdditionalIcons}"; Flags: checkedonce
 
 [Files]
-Source: "dist\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "LGPL-3.0.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "config.yaml.example"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\dist\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\LGPL-3.0.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\config.yaml.example"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; WorkingDir: "{app}"
@@ -56,7 +56,7 @@ Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Working
 Root: HKCU; Subkey: "Software\Classes\.xml"; ValueType: string; ValueData: "nfe2pdf.xml"; Flags: uninsdeletekey; Tasks: fileassoc
 Root: HKCU; Subkey: "Software\Classes\nfe2pdf.xml"; ValueType: string; ValueData: "NF-e XML Document"; Flags: uninsdeletekey; Tasks: fileassoc
 Root: HKCU; Subkey: "Software\Classes\nfe2pdf.xml\DefaultIcon"; ValueType: string; ValueData: "{app}\{#MyAppExeName},0"; Flags: uninsdeletekey; Tasks: fileassoc
-Root: HKCU; Subkey: "Software\Classes\nfe2pdf.xml\shell\open\command"; ValueType: string; ValueData: """{app}\{#MyAppExeName}""" """%1""""; Flags: uninsdeletekey; Tasks: fileassoc
+Root: HKCU; Subkey: "Software\Classes\nfe2pdf.xml\shell\open\command"; ValueType: string; ValueData: """{app}\{#MyAppExeName}"" ""%1"""; Flags: uninsdeletekey; Tasks: fileassoc
 
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Parameters: "install"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent

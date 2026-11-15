@@ -42,6 +42,7 @@ def build(clean_first: bool = False) -> int:
     iscc_paths = [
         r"C:\Program Files (x86)\Inno Setup 6\ISCC.exe",
         r"C:\Program Files\Inno Setup 6\ISCC.exe",
+        r"C:\Users\Adriano\AppData\Local\Inno Setup 6\ISCC.exe",
     ]
     iscc = None
     for path in iscc_paths:
