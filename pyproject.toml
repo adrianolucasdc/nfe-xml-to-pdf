@@ -52,6 +52,11 @@ target-version = "py311"
 line-length = 100
 select = ["E", "F", "I", "UP", "B", "C4", "PTH", "T20", "ARG", "SIM", "RET", "ERA"]
 ignore = ["S101", "PTH123"]
+extend-exclude = ["scripts/"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "C4", "PTH", "T20", "ARG", "SIM", "RET", "ERA"]
+ignore = ["S101", "PTH123"]
 
 [tool.ruff.format]
 quote-style = "double"

@@ -22,7 +22,7 @@
 | **Marca d'água "CANCELADA"** | Detecta automaticamente NF-e cancelada (`protNFe/cStat=101`) |
 | **Canhoto Transportador** | Opcional, posicionável (topo, base, lateral) |
 | **Configuração Externa** | `config.yaml` em `%APPDATA%\nfe2pdf\` + override via `NFE2PDF_*` env vars |
-| **Executável Standalone** | ~15 MB, single-file, sem Python instalado no cliente (PyInstaller) |
+| **Executável Standalone** | ~37 MB, single-file, sem Python instalado no cliente (PyInstaller) |
 | **Instalador Windows** | Inno Setup: `Program Files\nfe2pdf\`, atalho Menu Iniciar, desinstalador limpo |
 
 ---
@@ -74,7 +74,33 @@ O instalador:
 ```bash
 # Baixe nfe2pdf.exe da Release
 # Coloque em qualquer pasta (ex: C:\Ferramentas\)
-# Execute uma vez: nfe2pdf.exe --install-association  (precisa Admin)
+# Execute uma vez: nfe2pdf.exe install  (sem Admin - usa HKCU)
+```
+
+---
+
+## 📖 Uso Rápido
+
+```bash
+# Gerar DANFE via CLI
+nfe2pdf.exe generate nota.xml -o danfe.pdf
+
+# Duplo-clique no Windows (após instalar)
+# Associa .xml automaticamente no primeiro run ou: nfe2pdf.exe install
+
+# Configuração
+nfe2pdf.exe config --show-path    # Mostra local do config.yaml
+nfe2pdf.exe config --edit         # Abre no editor padrão
+nfe2pdf.exe config --reset        # Restaura padrões
+
+# Verificar/instalar associação
+nfe2pdf.exe install --check       # Verifica se .xml já associado
+nfe2pdf.exe install               # Instala associação .xml
+nfe2pdf.exe install --force       # Reinstala forçado
+
+# Ajuda
+nfe2pdf.exe --help
+nfe2pdf.exe --version
 ```
 
 ---
@@ -136,15 +162,13 @@ tests/
 │   ├── test_models.py       # Pydantic validation: CNPJ, datas, decimais, enums
 │   ├── test_parser.py       # XPath, namespaces, XML malformado, não-NFe
 │   ├── test_use_cases.py    # Orquestração com mocks de ports
-│   └── test_adapters.py     # BFRAdapter: XML fixture → bytes PDF
+│   ├── test_config.py       # Pydantic Settings, YAML, env vars
+│   ├── test_validator.py    # Validação estrutural XML
+│   └── test_bfr_adapter.py  # BFRAdapter: XML fixture → bytes PDF
 ├── integration/
-│   ├── test_cli.py          # subprocess.run CLI → exit code, stdout, arquivo gerado
-│   └── test_e2e_generate.py # XML → PDF → extrai texto (pdfminer) → assert
+│   └── test_full_pipeline.py # XML → parse → PDF → extrai texto (pdfminer) → assert
 └── fixtures/
-    ├── nfe_v400_valid.xml   # NF-e 4.00 completa (valores redondos p/ assert fácil)
-    ├── nfe_cancelled.xml    # Com protNFe cStat=101
-    ├── nfe_invalid.xml      # Malformado (tag não fechada)
-    └── nfe_not_nfe.xml      # Namespace diferente (ex: NFS-e)
+    └── nfe_sample.xml       # NF-e 4.00 completa anonimizada (valores redondos p/ assert)
 ```
 
 **Princípios**:
@@ -197,16 +221,18 @@ $env:NFE2PDF_LOGGING__LEVEL = "DEBUG"
 ### Executável (PyInstaller)
 ```bash
 python scripts/build_exe.py
-# Gera: dist/nfe2pdf.exe (~15-20 MB)
+# Gera: dist/nfe2pdf.exe (~37 MB)
 # Inclui: --onefile, --noconsole, --add-data assets/logo.png, --hidden-import brazilfiscalreport.*
+# Requer: venv limpo + conda DLLs (_ctypes.pyd, ffi.dll, libcrypto-3-x64.dll, etc.)
 ```
 
 ### Instalador (Inno Setup)
 ```bash
-iscc scripts/build_installer.iss
-# Gera: dist/nfe2pdf-setup.exe (~20 MB)
+python scripts/build_installer.py
+# ou: iscc scripts/build_installer.iss
+# Gera: installer_output/nfe2pdf_setup_v0.1.0.exe (~39 MB)
 # Tasks: associate_xml, desktop_icon
-# Run: nfe2pdf.exe --install-association (pós-install)
+# Run: nfe2pdf.exe install (pós-install)
 ```
 
 ---
