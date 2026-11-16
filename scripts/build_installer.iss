@@ -20,7 +20,7 @@ AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
-DefaultDirName={pf}\{#MyAppName}
+DefaultDirName={autopf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
 LicenseFile=..\LICENSE
@@ -31,6 +31,7 @@ Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
 PrivilegesRequired=lowest
+PrivilegesRequiredOverridesAllowed=dialog
 ArchitecturesInstallIn64BitMode=x64
 
 [Languages]
@@ -49,30 +50,36 @@ Source: "..\config.yaml.example"; DestDir: "{app}"; Flags: ignoreversion
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; WorkingDir: "{app}"
 Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"
-Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; WorkingDir: "{app}"; Tasks: desktopicon
+Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; WorkingDir: "{app}"; Tasks: desktopicon
 
 [Registry]
-; Register .xml file association (NF-e) - HKCU for non-admin install
-Root: HKCU; Subkey: "Software\Classes\.xml"; ValueType: string; ValueData: "nfe2pdf.xml"; Flags: uninsdeletekey; Tasks: fileassoc
+; .xml -> nfe2pdf (HKCU, sem admin). OBS: o Windows 10/11 ignora isto se o usuario ja
+; tiver uma escolha propria (UserChoice); por isso tambem registramos o app em
+; "Abrir com" e abrimos as Configuracoes de apps padrao ao final.
+Root: HKCU; Subkey: "Software\Classes\.xml"; ValueType: string; ValueData: "nfe2pdf.xml"; Flags: uninsdeletevalue; Tasks: fileassoc
+Root: HKCU; Subkey: "Software\Classes\.xml\OpenWithProgids"; ValueType: string; ValueName: "nfe2pdf.xml"; ValueData: ""; Flags: uninsdeletevalue; Tasks: fileassoc
 Root: HKCU; Subkey: "Software\Classes\nfe2pdf.xml"; ValueType: string; ValueData: "NF-e XML Document"; Flags: uninsdeletekey; Tasks: fileassoc
 Root: HKCU; Subkey: "Software\Classes\nfe2pdf.xml\DefaultIcon"; ValueType: string; ValueData: "{app}\{#MyAppExeName},0"; Flags: uninsdeletekey; Tasks: fileassoc
 Root: HKCU; Subkey: "Software\Classes\nfe2pdf.xml\shell\open\command"; ValueType: string; ValueData: """{app}\{#MyAppExeName}"" ""%1"""; Flags: uninsdeletekey; Tasks: fileassoc
+; Aplicativo listado em "Abrir com..."
+Root: HKCU; Subkey: "Software\Classes\Applications\{#MyAppExeName}"; ValueType: string; ValueName: "FriendlyAppName"; ValueData: "{#MyAppName}"; Flags: uninsdeletekey; Tasks: fileassoc
+Root: HKCU; Subkey: "Software\Classes\Applications\{#MyAppExeName}\SupportedTypes"; ValueType: string; ValueName: ".xml"; ValueData: ""; Tasks: fileassoc
+Root: HKCU; Subkey: "Software\Classes\Applications\{#MyAppExeName}\shell\open\command"; ValueType: string; ValueData: """{app}\{#MyAppExeName}"" ""%1"""; Tasks: fileassoc
 
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Parameters: "install"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
+Filename: "ms-settings:defaultapps"; Description: "Abrir Configuracoes para definir o nfe2pdf como padrao para arquivos .xml"; Flags: shellexec postinstall skipifsilent unchecked; Tasks: fileassoc
 
 [UninstallDelete]
 Type: filesandordirs; Name: "{app}"
 
 [Code]
-// Notify Windows Shell of file association change
+procedure SHChangeNotify(wEventId: Integer; uFlags: Integer; dwItem1: Integer; dwItem2: Integer);
+  external 'SHChangeNotify@shell32.dll stdcall';
+
+// Avisa o Windows que as associacoes de arquivo mudaram (SHCNE_ASSOCCHANGED)
 procedure CurStepChanged(CurStep: TSetupStep);
 begin
   if CurStep = ssPostInstall then
-  begin
-    // SHChangeNotify to refresh file associations
-    // SHCNE_ASSOCCHANGED = $08000000
-    // SHCNF_IDLIST = 0
-    // We call it to ensure the new association takes effect immediately
-  end;
+    SHChangeNotify($08000000, 0, 0, 0);
 end;
