@@ -62,13 +62,31 @@ src/nfe2pdf/
 ```bash
 # Baixe da página de Releases
 # https://github.com/adrianolucasdc/nfe-xml-to-pdf/releases/latest
-# Execute: nfe2pdf-setup.exe → Next → Next → Concluir
+# Execute: nfe2pdf_setup_v0.1.0.exe → Next → Next → Concluir
 ```
 O instalador:
-1. Copia `nfe2pdf.exe` para `C:\Program Files\nfe2pdf\`
+1. Copia `nfe2pdf.exe` para `%LOCALAPPDATA%\Programs\nfe2pdf\` (instalação só para o seu usuário, sem administrador). Se preferir instalar para todos os usuários em `C:\Program Files\nfe2pdf\`, escolha essa opção na janela inicial; o Windows pedirá permissão de administrador.
 2. Cria atalho no Menu Iniciar
-3. **Registra associação `.xml`** no Windows Registry
+3. **Registra o nfe2pdf para arquivos `.xml`** (`HKEY_CURRENT_USER`, sem admin) e o lista em "Abrir com..."
 4. Inclui licenças MIT + LGPL-3.0
+
+#### ⚠️ Definir o nfe2pdf como aplicativo padrão para `.xml`
+
+O Windows 10/11 guarda a escolha do usuário para cada tipo de arquivo (normalmente o navegador, para `.xml`) e **não permite que um instalador a sobrescreva**. Por isso, na primeira vez é preciso escolher o nfe2pdf manualmente. É feito uma única vez.
+
+**Opção A — Pelo instalador (mais rápido):** na última tela, marque *"Abrir Configurações para definir o nfe2pdf como padrão para arquivos .xml"* e siga a Opção C abaixo.
+
+**Opção B — "Abrir com...":**
+1. Clique com o botão direito em qualquer arquivo `.xml` → **Abrir com** → **Escolher outro aplicativo**.
+2. Selecione **nfe2pdf**. Se não aparecer, clique em *Procurar outro aplicativo neste PC* e escolha `nfe2pdf.exe` (em `%LOCALAPPDATA%\Programs\nfe2pdf\` ou `C:\Program Files\nfe2pdf\`).
+3. Marque **"Sempre usar este aplicativo para abrir arquivos .xml"** e clique em **OK**.
+
+**Opção C — Configurações do Windows:**
+1. Abra **Configurações → Aplicativos → Aplicativos padrão**.
+2. Busque por `.xml` (*Escolher padrões por tipo de arquivo*) e clique no aplicativo atual.
+3. Selecione **nfe2pdf**.
+
+Depois disso, o duplo-clique em um `.xml` gera o PDF (DANFE) na mesma pasta do arquivo. Em caso de erro, consulte o log em `%APPDATA%\nfe2pdf\nfe2pdf.log`.
 
 ### Opção 2: Executável Standalone
 ```bash
