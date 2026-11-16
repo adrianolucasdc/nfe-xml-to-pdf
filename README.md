@@ -10,6 +10,13 @@
 >
 > **Solução**: Instale o `nfe2pdf`, associe `.xml` no Windows e **duplo-clique no arquivo XML gera o DANFE oficial (PDF) na mesma pasta**, com layout NT 2026.010, logo da empresa, marca d'água "CANCELADA" e canhoto do transportador.
 
+> ### 👤 Para quem só quer converter XML em PDF (sem terminal)
+> 1. Execute o instalador **`nfe2pdf_setup_v0.1.0.exe`** (veja [Instalação](#-instalação-usuário-final)).
+> 2. Na primeira vez, escolha o **nfe2pdf** como aplicativo padrão para `.xml` ([como fazer](#️-definir-o-nfe2pdf-como-aplicativo-padrão-para-xml)).
+> 3. **Dê duplo-clique em qualquer XML de NF-e**: o PDF (DANFE) aparece na mesma pasta.
+>
+> Não é preciso abrir o CMD, instalar Python nem digitar comandos. A linha de comando (`nfe2pdf.exe generate ...`) é opcional e voltada a uso técnico/automação.
+
 ---
 
 ## ✨ Features
@@ -252,6 +259,8 @@ python scripts/build_installer.py
 # Tasks: associate_xml, desktop_icon
 # Run: nfe2pdf.exe install (pós-install)
 ```
+
+**Instalar a versão compilada localmente / distribuir aos usuários:** o arquivo gerado em `installer_output\nfe2pdf_setup_v0.1.0.exe` é o **instalador simples para o usuário final** (ex.: contadores). Basta executá-lo, ou enviá-lo/publicá-lo para quem for usar. Depois da instalação, siga [Definir o nfe2pdf como aplicativo padrão para `.xml`](#️-definir-o-nfe2pdf-como-aplicativo-padrão-para-xml) para que o duplo-clique funcione. Se houver uma versão antiga instalada, desinstale-a antes (Configurações → Aplicativos).
 
 ---
 
