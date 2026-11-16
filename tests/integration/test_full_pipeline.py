@@ -490,3 +490,14 @@ class TestCLIIntegration:
 
         text = extract_text(str(output_path))
         assert "EMPRESA EXEMPLO LTDA" in text
+
+    def test_cancelled_watermark_only_when_nfe_is_cancelled(self):
+        from nfe2pdf.config import Settings
+        from nfe2pdf.infrastructure.pdf.bfr_adapter import BFRAdapter
+
+        config = Settings().danfe.to_pdf_generator_config()
+        assert config.watermark_cancelled is True  # default option on
+        adapter = BFRAdapter()
+        adapter._init_bfr()
+        assert adapter._build_bfr_config(config, is_cancelled=False).watermark_cancelled is False
+        assert adapter._build_bfr_config(config, is_cancelled=True).watermark_cancelled is True

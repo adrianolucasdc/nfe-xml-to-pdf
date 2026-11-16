@@ -89,8 +89,12 @@ class BFRAdapter:
         }
         return mapping.get(position, ReceiptPosition.TOP)
 
-    def _build_bfr_config(self, config: PDFGeneratorConfig):
-        """Convert our PDFGeneratorConfig to BFR DanfeConfig."""
+    def _build_bfr_config(self, config: PDFGeneratorConfig, is_cancelled: bool = False):
+        """Convert our PDFGeneratorConfig to BFR DanfeConfig.
+
+        Na BFR, ``watermark_cancelled=True`` desenha "CANCELADA" incondicionalmente.
+        Por isso só o habilitamos quando a NF-e está de fato cancelada.
+        """
         from brazilfiscalreport.danfe.config import (
             DanfeConfig,
             DecimalConfig,
@@ -121,7 +125,7 @@ class BFRAdapter:
             font_type=self._map_font_type(config.font_type),
             font_size=self._map_font_size(config.font_size),
             display_pis_cofins=config.display_pis_cofins,
-            watermark_cancelled=config.watermark_cancelled,
+            watermark_cancelled=config.watermark_cancelled and is_cancelled,
             infcpl_semicolon_newline=config.infcpl_semicolon_newline,
             product_description_config=ProductDescriptionConfig(
                 display_branch=False,
@@ -172,7 +176,7 @@ class BFRAdapter:
                 )
 
             # Build BFR config
-            bfr_config = self._build_bfr_config(config)
+            bfr_config = self._build_bfr_config(config, is_cancelled=nfe_data.is_cancelled)
 
             # Generate PDF using BFR
             danfe = self._danfe_class(xml=xml_bytes, config=bfr_config)
