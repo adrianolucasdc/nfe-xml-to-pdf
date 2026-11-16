@@ -26,21 +26,37 @@ from nfe2pdf.infrastructure import (
     NFexmlValidator,
     create_pdf_generator,
 )
+from nfe2pdf.utils.paths import ensure_config_dir
 
-# Configure logger
-logger.remove()
-logger.add(
-    sys.stderr,
-    level="INFO",
-    format="<green>{time:HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{message}</cyan>",
-)
+_LOG_FORMAT = "<green>{time:HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{message}</cyan>"
 
 
 def setup_logging(level: str = "INFO") -> None:
-    """Configure logging level."""
+    """Configure logging level.
+
+    Em builds PyInstaller ``--noconsole`` ``sys.stderr`` é ``None``; nesse caso
+    os logs vão para um arquivo em %APPDATA%\\nfe2pdf\\nfe2pdf.log.
+    """
     logger.remove()
-    fmt = "<green>{time:HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{message}</cyan>"
-    logger.add(sys.stderr, level=level.upper(), format=fmt)
+    if sys.stderr is not None:
+        logger.add(sys.stderr, level=level.upper(), format=_LOG_FORMAT)
+        return
+    try:
+        log_file = ensure_config_dir() / "nfe2pdf.log"
+        logger.add(
+            log_file,
+            level=level.upper(),
+            format="{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {message}",
+            rotation="1 MB",
+            retention=3,
+            encoding="utf-8",
+        )
+    except OSError:
+        pass  # Sem sink disponível: logs descartados, mas o app não quebra
+
+
+# Configure logger
+setup_logging()
 
 
 def handle_error(e: Exception, ctx: click.Context) -> None:
